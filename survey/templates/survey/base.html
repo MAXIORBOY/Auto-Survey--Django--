@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+    <style>
+        .base {
+            text-align: center;
+            background-color: #3399ff;}
+
+        .home_box {
+            width: 650px;
+            border: 5px solid black;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: floralwhite;
+            margin-top: 0px;
+            margin-bottom: 0px;}
+
+        .clearfix {
+            overflow: auto;}
+
+        .titles{
+            font-size: 36px;}
+
+        .descriptions{
+            font-size: 20px;
+            color: black;}
+
+        .note {
+            font-size: 18px;
+            font-weight: 700;
+            display: block;
+            padding: 10px 12px;
+            margin: 0 0 10px 0;
+            border-radius: 4px;
+            background-color: #fff;
+            background-position: 5px 12px;}
+
+        .error {
+            color: #ba2121;
+            border: 3px solid #ba2121;}
+
+        .confirmation {
+            color: green;
+            border: 3px solid green;}
+
+        .headers {
+            background-color: moccasin;
+            width: 650px; 
+            color: black;
+            text-align: center;
+            font-size: 28px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 2px;
+            margin-bottom: 0px;
+            border: 5px solid black;}
+
+        .headers h2{
+            font-size: 22px;}
+
+        ul {
+            text-align: center;
+            list-style-type: none;
+            font-size: 20px;
+            margin: 2px;
+            padding-left: 30%;
+            overflow: hidden;
+            background-color: black;}
+
+        li {
+            float: left;}
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            text-decoration: none;}
+
+        li a:hover {
+            background-color: #222222;}
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            background-color: black;
+            color: white;
+            margin-top: 2px;} 
+
+        img {
+            float: left;
+            overflow: auto;
+            position: relative;}
+
+        form{
+            margin-bottom: 2px;}
+    </style>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Survey{% endblock %}</title>
+        <base href="http://127.0.0.1:8000/"></base>
+    </head>
+    <body>
+        <div style="min-width: 1200px;", id="header">
+            <header>
+                <nav>
+                    <ul>
+                        <li>
+                            <a href=''>
+                                <h1>Main</h1>
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/current'>
+                                <h1>Active surveys</h1>
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/archives'>
+                                <h1>Archives</h1>
+                            </a>
+                        </li>
+                        <li style='padding-top: 45px;'>
+                            <form method='get', action='/search/'>
+                                {{form}}
+                                <button id='search', type='submit'>Search</button>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+        <div id="main_content", class=base>
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer>
+            <p>Author: MAXIORBOY</p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,191 @@
+{% extends 'survey/base.html' %}
+{% load template_methods %}
+{% block title %} Auto-Survey {% endblock %}
+{% block content %}
+<style>
+    .page_switch {
+        background-color: #3399ff;
+        margin-top: 16px;}
+
+    .page_switch table {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 32px;
+        width: auto;}
+
+    .page_switch a {
+        border: 3px solid black;
+        padding-right: 10px;
+        padding-left: 10px;
+        color: black;
+        background-color: white;
+        text-decoration: none;}
+
+    .date p {
+        color: black;
+        text-align: right;
+        font-size: 16px;
+        margin-top: 5px;
+        margin-bottom: 10px;}
+
+    .content {
+        overflow: auto;}
+
+    .content a {
+        text-decoration: none;}
+
+    .content a:link h2, a:visited h2 {
+        color: black;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 5px;
+        margin-bottom: 10px;}
+
+    .content a:hover h2, a:active h2 {
+        color: darkorange;}
+
+    .content a:hover img, a:active img {
+        opacity: 0.9;}
+
+    .content table, tbody {
+        width: 650px;
+        table-layout: fixed;
+        overflow:auto;
+        text-align:center;}
+
+    .headers {
+        background-color: moccasin;
+        border-bottom: solid 1px;}
+
+    .headers h2 {
+        font-size: 28px;
+        margin-top: 5px;
+        margin-bottom: 5px;}
+
+</style>
+
+{% if error_code == 1 %}
+    <div id="error message">
+        <p class="note error">The survey expired</p>
+    </div>
+{% elif error_code == 2 %}
+    <div id="error message">
+        <p class="note error">You have already voted in this survey</p>
+    </div>
+{% endif %}
+{% if vote_successful %}
+    <div id="feedback">
+        <p class="note confirmation">Thank you! Your vote has been cast</p>
+    </div>
+{% endif %}
+
+{% if search is not None %}
+    <div id="search_results", class="headers">
+        {% if search_results != 1 %}
+            <h2>{{search_results}} search results</h2>
+        {% else %}
+            <h2>{{search_results}} search result</h2>
+        {% endif %}
+    </div>
+{% endif %}
+<form action="/survey/">
+    <div id="main_box", class=home_box>
+        {% for survey_id in survey_ids %}
+            <div id="survey", class=clearfix>
+                <div id="survey_time_data", class="date">
+                    {% define survey_completion_time_left|get_item:survey_id as surv_compt_date %}
+                    <p>{{survey_creation_dates|get_item:survey_id}}</p>
+                    {% if surv_compt_date is not None %}
+                        {% if surv_compt_date != 'ended' %}
+                            {% if 'd' in surv_compt_date or 'h' in surv_compt_date and '1h.' not in surv_compt_date %}
+                                <b><p>Expires in: {{surv_compt_date}}</p></b>
+                            {% else %}
+                                <b><p style="color: red;">Expires in: {{surv_compt_date}}</p></b>
+                            {% endif %}
+                        {% else %}
+                            <b><p>Voting ended</p></b>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div id="survey_content", class="content">
+                    {% replace_whitespaces survey_names|get_item:survey_id as name_url %}
+                    <a href='/{{name_url}}'>
+                        <h2 class="titles">{{survey_names|get_item:survey_id}}</h2>
+                        <table>
+                            <tr>
+                                <td>
+                                    {% if survey_photo_orientations|get_item:survey_id  == 'horizontal' %}
+                                        <img src='{{survey_photo_links|get_item:survey_id}}' alt='{{survey_names|get_item:survey_id}}' width="320" height="240">
+                                    {% else %}
+                                        <img src='{{survey_photo_links|get_item:survey_id}}' alt='{{survey_names|get_item:survey_id}}' width="240" height="320">
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <p class="descriptions">{{survey_descriptions|get_item:survey_id}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+</form>
+<div id="page_switcher", class="page_switch">
+    {% determine_page_numbers current_site_number as table %}
+    <table>
+        <tr>
+            {% if current_site_number > 1 %}
+                <td>
+                    {% decrement_value current_site_number as dec_cur_number %}
+                    {% if search is None %}
+                        <a href="{% merge_url site_mode %}/{{dec_cur_number}}/">
+                    {% else %}
+                        <a href="{% url 'searching' page=dec_cur_number search=search %}">
+                    {% endif %}
+                        <
+                    </a>
+                </td> 
+            {% endif %}
+            {% for site_number in table %}
+                {% if site_number <= max_sites %}
+                    <td>
+                        {% if site_number == current_site_number %}
+                            {% if search is None %}
+                                <a style='background-color: red;' href='{% merge_url site_mode %}/{{site_number}}/'>
+                            {% else %}
+                                <a style='background-color: red;' href="{% url 'searching' page=site_number search=search %}">
+                            {% endif %}
+                                <strong style="padding-right: 5px; padding-left: 5px;">{{site_number}}</strong>
+                            </a>
+                        {% else %}
+                            {% if search is None %}
+                                <a href="{% merge_url site_mode %}/{{site_number}}/">
+                            {% else %}
+                                <a href="{% url 'searching' page=site_number search=search %}">
+                            {% endif %}
+                                {{site_number}}
+                            </a>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+            {% if current_site_number < max_sites %}
+                <td>
+                    {% increment_value current_site_number as in_cur_number %}
+                    {% if search is None %}
+                        <a href='{% merge_url site_mode %}/{{in_cur_number}}/'>
+                    {% else %}
+                        <a href="{% url 'searching' page=in_cur_number search=search %}">
+                    {% endif %}
+                        >
+                    </a>
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+    <p style="padding-bottom: 10px; margin-bottom: 0px"></p>
+</div>
+{% endblock %}

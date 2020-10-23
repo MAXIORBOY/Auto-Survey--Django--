@@ -1,0 +1,217 @@
+{% extends 'survey/base.html' %}
+{% load template_methods %}
+{% block title %} {{survey_name}} {% endblock %}
+{% block content %}
+<style>
+    .button {
+        background-color: white;
+        color: black;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        margin-bottom: 5px;
+        border: 2px solid #4CAF50;
+        font-size: 20px;}
+
+    .button:hover {
+        background-color: #4CAF50;
+        color: white;}
+
+    .container {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;}
+
+    .container input {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0%;
+        margin-bottom: auto;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;}
+
+    .checkmark {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        top: -50px;
+        left: 40%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        background-color: #eee;}
+
+    .checkmark_error {
+        border: solid red;}
+
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;}
+
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;}
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;}
+
+    .container input:checked ~ .checkmark:after {
+        display: block;}
+
+    .container .checkmark:after {
+        left: 18px;
+        top: 10px;
+        width: 10px;
+        height: 20px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);}
+
+    .result_table{
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        font-size: 20px;
+        width: 100%;}
+
+    .result_table td, .result_table th {
+        border: 1px solid #ddd;
+        padding: 8px;}
+
+    .result_table tr:nth-child(even){background-color: #f2f2f2;}
+
+    .result_table tr:hover {background-color: #ddd;}
+
+    .result_table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: center;
+        background-color: #4CAF50;
+        color: white;}
+
+    table, tbody {
+        table-layout: fixed;
+        overflow:auto;
+        text-align:center;}
+
+</style>
+
+<div id="error message">
+    {% if multi_choice_error_code == 1 %}
+        <p class="note error">Please check at least one checkbox</p>
+    {% elif multi_choice_error_code == 2 %}
+        <p class="note error">Maximum number of checks in this survey is: {{survey_type_parameter}}</p>
+    {% endif %}
+</div>
+<div id="survey_title", class=headers>
+    <h1>{{survey_name}}</h1>
+    {% if survey_plot is None %}
+        {% if survey_type == 'single_choice' %}
+            <h2>Vote for the option, you prefer the most</h2>
+        {% elif survey_type == 'multi_choice' %}
+            <h2>Vote for the options, you like (up to: {{survey_type_parameter}})</h2>
+        {% elif survey_type == 'answer_comparasion' %}
+            <h2>Vote for the option, you prefer more</h2>
+        {% endif %}
+    {% else %}
+        {% if survey_type == 'single_choice' %}
+            <h2>Survey type: Single choice</h2>
+        {% elif survey_type == 'multi_choice' %}
+            <h2>Survey type: Multi choice (up to {{survey_type_parameter}} choices)</h2>
+        {% elif survey_type == 'answer_comparasion' %}
+            <h2>Survey type: Answer comparasion (between {{survey_type_parameter}} choices)</h2>
+        {% endif %}
+    {% endif %}
+</div>
+<div id="main_box", class=home_box>
+    {% if survey_plot is None %}
+    <form method="post" action="/{% replace_whitespaces survey_name %}/">
+        {% csrf_token %}
+        {% for answer_id in answer_ids %}
+            <div id="answer", class=clearfix>
+                <h2 class=titles>{{answer_names|get_item:answer_id}}</h2>
+                <table width="650">
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        {% if answer_photo_orientations|get_item:answer_id == 'horizontal' %}
+                                            <img src='{{answer_photo_links|get_item:answer_id}}' alt='{{answer_names|get_item:answer_id}}' width="320" height="240">
+                                        {% else %}
+                                            <img src='{{answer_photo_links|get_item:answer_id}}' alt='{{answer_names|get_item:answer_id}}' width="240" height="320">
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {% if answer_descriptions|get_item:answer_id is not None %}
+                                            <p class=descriptions>{{answer_descriptions|get_item:answer_id}}</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            {% if survey_type != 'multi_choice' %}
+                                <button class="button", id="button_{{answer_id}}", name="voting_object_{{answer_id}}", type='submit', value={{answer_id}}>VOTE</button>
+                            {% else %}
+                                <label class=container>
+                                    <input type="checkbox" id="checkbox_{{answer_id}}" name="voting_object_{{answer_id}}", value={{answer_id}}>
+                                    <span class="checkmark"></span>
+                                </label>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+            </div>
+        {% endfor%}
+        {% if survey_type == 'multi_choice' %}
+            <p></p>
+            <button class="button", name="button_vote", type='submit', value='start'>VOTE</button>
+        {% endif %}
+        </form>
+
+    {% else %}
+        <div id="survey_results", class=clearfix>
+            <img src="data:image/png;base64,{{survey_plot}}" alt="" width=650 height=480>
+            <div id="survey_result_table">
+                <table class=result_table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total votes</th>
+                        <th>Percentage of votes</th>
+                    </tr>
+                    {% for answer_name in answer_names %}
+                    <tr>
+                        <td style="text-align: left;">{{answer_name}}</th>
+                        <td>{{survey_dictionary_votes|get_item:answer_name}}</td>
+                        <td>{{survey_dictionary_perc_votes|get_item:answer_name}}%</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class=result_table>
+                        <td style="text-align: left;"><b>Total</b></td>
+                        <td><b>{{total_votes}}</b></td>
+                        <td><b>100%</b></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
