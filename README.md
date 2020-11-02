@@ -9,4 +9,3 @@ Survey customizable options:
   * single-choice
   * multi-choice (up to n choices)
   * answer comparasion (beetween n random picked choices)
- 
