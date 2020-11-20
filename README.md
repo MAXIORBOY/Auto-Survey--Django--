@@ -9,3 +9,15 @@ Survey customizable options:
   * single-choice
   * multi-choice (up to n choices)
   * answer comparasion (beetween n random picked choices)
+  
+## Launch:
+(...)
+
+## Technology:
+* ```Python``` 3.8
+* ```Django``` 3.1.2
+* ```numpy``` 1.19.3
+* ```matplotlib``` 3.3.3
+
+## Screenshots:
+(...)
