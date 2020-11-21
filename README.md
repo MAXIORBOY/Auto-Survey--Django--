@@ -12,7 +12,7 @@ Survey customizable options:
   * answer comparasion (beetween n random picked choices)
   
 ## Launch:
-* From the command line, use a command ```python manage.py runserver```. Then launch any internet browser and go the site which will show up in the command line.
+* From the command line, type ```python manage.py runserver```. Then launch any internet browser and go the site which will show up in the command line.
 
 ## Technology:
 * ```Python``` 3.8
