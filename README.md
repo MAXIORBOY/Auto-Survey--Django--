@@ -9,7 +9,7 @@ Survey customizable options:
 * type of vote:
   * single-choice
   * multi-choice (up to n choices)
-  * answer comparasion (beetween n random picked choices)
+  * answer comparasion (beetween n randomly picked choices)
   
 ## Launch:
 * From the command line, type ```python manage.py runserver```. Then launch any internet browser and go the site which will show up in the command line.
