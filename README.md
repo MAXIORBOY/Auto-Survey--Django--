@@ -4,7 +4,7 @@ Survey customizable options:
 * name  
 * description
 * photo representing the survey (link)
-* orientation of that photo
+* orientation of that photo (horizontal / portrait)
 * end date of voting
 * type of vote:
   * single-choice
