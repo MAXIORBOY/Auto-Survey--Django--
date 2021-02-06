@@ -1,6 +1,6 @@
-# Auto-Survey is my first Django project. It's a framework which allows to create custom surveys.
+# Auto-Survey it's a framework which allows to create custom surveys.
 
-## Implementation:
+## Customization:
 ```Survey``` customizable options:
 * name  
 * description
