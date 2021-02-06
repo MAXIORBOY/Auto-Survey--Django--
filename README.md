@@ -6,6 +6,8 @@
 * Adding, editing, removing surveys and answers (currently only from the Admin Menu)
 * Automatically generated results (a graph and a table) for expired surveys.
 * Feedback messages
+* Survey's expire time
+* Site pages
 
 ## Customization:
 ```Survey``` customizable options:
