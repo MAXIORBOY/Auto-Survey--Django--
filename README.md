@@ -1,5 +1,12 @@
 # Auto-Survey it's a framework which allows to create custom surveys.
 
+## Features:
+* Filters: active, expired surveys
+* Searchbar
+* Adding, editing, removing surveys and answers (currently only from the Admin Menu)
+* Automatically generated results (a graph and a table) for expired surveys.
+* Feedback messages
+
 ## Customization:
 ```Survey``` customizable options:
 * name  
@@ -21,7 +28,7 @@
 * to which survey it belongs
   
 ## Launch:
-* From the command line, type ```python manage.py runserver```. Then launch any internet browser and go the site which will show up in the command line.
+* From the command line, type ```python manage.py runserver```. Then launch any internet browser and go the site which will show up in the command line (by default it should be: ```127.0.0.1:8000/```).
 
 ## Technology:
 * ```Python``` 3.8
